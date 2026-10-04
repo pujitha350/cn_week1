@@ -1,0 +1,84 @@
+import ipaddress
+
+# LAN configuration
+computers = {
+    "PC1": {
+        "ip": "192.168.1.10",
+        "subnet": "255.255.255.0",
+        "gateway": "192.168.1.1"
+    },
+    "PC2": {
+        "ip": "192.168.1.11",
+        "subnet": "255.255.255.0",
+        "gateway": "192.168.1.1"
+    },
+    "PC3": {
+        "ip": "192.168.1.12",
+        "subnet": "255.255.255.0",
+        "gateway": "192.168.1.1"
+    }
+}
+
+# Display IP configuration
+print("===== LAN IP CONFIGURATION =====")
+
+for pc, config in computers.items():
+    print(f"\n{pc}")
+    print("IP Address  :", config["ip"])
+    print("Subnet Mask :", config["subnet"])
+    print("Gateway     :", config["gateway"])
+
+
+# Function to check whether two computers
+# belong to the same network
+def same_network(ip1, ip2):
+    network1 = ipaddress.IPv4Network(
+        ip1 + "/24",
+        strict=False
+    )
+
+    network2 = ipaddress.IPv4Network(
+        ip2 + "/24",
+        strict=False
+    )
+
+    return network1 == network2
+
+
+# Test connectivity
+print("\n===== LAN CONNECTIVITY TEST =====")
+
+pc_names = list(computers.keys())
+
+for i in range(len(pc_names)):
+    for j in range(i + 1, len(pc_names)):
+
+        pc1 = pc_names[i]
+        pc2 = pc_names[j]
+
+        ip1 = computers[pc1]["ip"]
+        ip2 = computers[pc2]["ip"]
+
+        if same_network(ip1, ip2):
+            print(f"{pc1} -> {pc2} : SUCCESS")
+        else:
+            print(f"{pc1} -> {pc2} : FAILED")
+
+
+# Display topology
+print("\n===== LAN TOPOLOGY =====")
+
+print("""
+                 +-----------+
+                 |  SWITCH   |
+                 +-----+-----+
+                       |
+          +------------+------------+
+          |            |            |
+        +---+        +---+        +---+
+        |PC1|        |PC2|        |PC3|
+        +---+        +---+        +---+
+         .10          .11          .12
+""")
+
+print("LAN setup completed successfully.")
